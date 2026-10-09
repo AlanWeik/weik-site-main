@@ -6,7 +6,9 @@ type ServiceCopy = {
   slug: string;
   name: string;
   short: string;
+  /** Browser tab + OG title. Edit per language block below. */
   metaTitle: string;
+  /** Meta description + OG description. Edit per language block below. */
   metaDescription: string;
   h1: string;
   lead: string;

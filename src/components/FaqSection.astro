@@ -13,12 +13,12 @@ const { faq, title, eyebrow = 'FAQ', intro } = Astro.props;
 
 <section class="container-x py-24 sm:py-32" aria-labelledby="faq-title">
   <div class="grid gap-12 lg:grid-cols-12">
-    <div class="lg:col-span-4">
+    <div class="faq-heading min-w-0 lg:col-span-4">
       <p class="eyebrow reveal">{eyebrow}</p>
       <h2 id="faq-title" class="h-section mt-5 reveal">{title}</h2>
       {intro && <p class="mt-6 text-lg leading-relaxed text-muted reveal">{intro}</p>}
     </div>
-    <div class="lg:col-span-8 border-t border-line">
+    <div class="min-w-0 lg:col-span-8 border-t border-line">
       {
         faq.map((f, idx) => (
           <details class="faq group border-b border-line" name="faq" open={idx === 0}>
@@ -43,6 +43,18 @@ const { faq, title, eyebrow = 'FAQ', intro } = Astro.props;
 </section>
 
 <style>
+  .faq-heading {
+    container-type: inline-size;
+  }
+
+  /* Scale section titles to the narrow FAQ column so long headings stay in-bounds. */
+  .faq-heading :global(.h-section) {
+    font-size: clamp(1.75rem, 11cqi, 3.35rem);
+    overflow-wrap: break-word;
+    text-wrap: balance;
+    max-width: 100%;
+  }
+
   .faq summary::-webkit-details-marker {
     display: none;
   }

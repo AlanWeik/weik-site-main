@@ -17,11 +17,17 @@ Om bygget klagar på telemetri: `ASTRO_TELEMETRY_DISABLED=1 npm run build`.
 
 | Vad | Fil |
 | --- | --- |
-| Tjänster (copy, meta, FAQ per tjänst) | `src/data/services.ts` |
+| Tjänster (copy, **metaTitle/metaDescription**, FAQ per tjänst) | `src/data/services.ts` |
 | Case | `src/data/projects.ts` |
 | Process, problem, "varför Weik", FAQ för start/kontakt, skills | `src/data/content.ts` |
 | E-post, LinkedIn, ort, Spline-scen | `src/config/site.ts` |
 | URL:er för sv/en | `src/i18n/index.ts` |
+
+### SEO – unik titel & beskrivning per sida
+
+- **Tjänstesidor** (`/tjanster/...`): sätt `metaTitle` och `metaDescription` i varje språkblock i `src/data/services.ts` (t.ex. `sv.metaTitle` för webb-fullstack).
+- **Startsida, tjänsteöversikt, case-lista, om, kontakt, tack**: `title` och `description` i `copy`-objektet i respektive fil under `src/views/` (t.ex. `HomeView.astro`, `ServicesView.astro`).
+- **Enskilda case**: genereras i `ProjectView.astro` från casets namn/kategori (lägg till egna fält i `projects.ts` om du vill styra dem manuellt).
 
 ## Spline
 
