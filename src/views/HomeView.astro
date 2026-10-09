@@ -1,0 +1,194 @@
+---
+import { Image } from 'astro:assets';
+import Base from '@/layouts/Base.astro';
+import Hero from '@/components/Hero.astro';
+import Marquee from '@/components/Marquee.astro';
+import SectionHeader from '@/components/SectionHeader.astro';
+import ServiceList from '@/components/ServiceList.astro';
+import ProjectCard from '@/components/ProjectCard.astro';
+import ProcessSection from '@/components/ProcessSection.astro';
+import FaqSection from '@/components/FaqSection.astro';
+import CtaBlock from '@/components/CtaBlock.astro';
+import { services } from '@/data/services';
+import { featuredProjects } from '@/data/projects';
+import { pains, why, homeFaq } from '@/data/content';
+import { contactHref, routes, t, type Lang } from '@/i18n';
+import portrait from '@/assets/people/alan-dark.png';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const i = t(lang);
+
+const copy = {
+  sv: {
+    title: 'Fullstackutvecklare i Halmstad – hemsidor & e-handel som säljer | Weik',
+    description:
+      'Weik är en webbstudio och fullstackutvecklare i Halmstad. Vi bygger snabba hemsidor, webbshoppar, WordPress och Shopify för företag i Halland – med SEO som ger fler kunder. Boka ett gratis samtal.',
+    painEyebrow: 'Problemet',
+    painTitle: 'Din hemsida borde vara din bästa säljare. Är den det?',
+    painIntro: 'De flesta företagssajter ser okej ut men gör ett dåligt jobb. Här är de fyra vanligaste orsakerna.',
+    painOutro: 'Vi bygger sajter som löser just det här – och mäter att det fungerar.',
+    servicesEyebrow: 'Tjänster',
+    servicesTitle: 'Allt du behöver för att synas, sälja och växa online.',
+    servicesIntro: 'Från en ny företagssajt till e-handel och löpande SEO. Ett team, ett ansvar.',
+    workEyebrow: 'Utvalda case',
+    workTitle: 'Webbshoppar och sajter som är byggda för att prestera.',
+    workIntro: 'Ett urval av projekt för varumärken inom e-handel, industri och tjänster.',
+    whyEyebrow: 'Varför Weik',
+    whyTitle: 'En studio som bryr sig om resultatet, inte bara leveransen.',
+    aboutEyebrow: 'Bakom Weik',
+    aboutTitle: 'Hej, jag heter Alan.',
+    aboutBody:
+      'Jag är fullstackutvecklare och grundare av Weik i Halmstad. Med över tre års erfarenhet av allt från .NET och React till WordPress, Shopify och SEO hjälper jag företag att få en hemsida som faktiskt gör skillnad i affären.',
+    aboutCta: 'Mer om Weik',
+    faqTitle: 'Frågor vi ofta får',
+    faqIntro: 'Hittar du inte svaret? Hör av dig så svarar vi inom en arbetsdag.',
+    marquee: ['Hemsidor', 'E-handel', 'WordPress', 'Shopify', 'SEO', 'Webbappar', 'Halmstad', 'Halland'],
+  },
+  en: {
+    title: 'Full-stack developer in Halmstad, Sweden – websites that sell | Weik',
+    description:
+      'Weik is a web studio and full-stack developer in Halmstad, Sweden. We build fast websites, online stores, WordPress and Shopify solutions with SEO that brings in customers. Book a free call.',
+    painEyebrow: 'The problem',
+    painTitle: 'Your website should be your best salesperson. Is it?',
+    painIntro: 'Most business websites look okay but do a poor job. These are the four most common reasons.',
+    painOutro: 'We build websites that fix exactly this – and measure that it works.',
+    servicesEyebrow: 'Services',
+    servicesTitle: 'Everything you need to get found, sell and grow online.',
+    servicesIntro: 'From a new company website to e-commerce and ongoing SEO. One team, one responsibility.',
+    workEyebrow: 'Selected work',
+    workTitle: 'Online stores and websites built to perform.',
+    workIntro: 'A selection of projects for brands in e-commerce, industry and services.',
+    whyEyebrow: 'Why Weik',
+    whyTitle: 'A studio that cares about results, not just delivery.',
+    aboutEyebrow: 'Behind Weik',
+    aboutTitle: 'Hi, I am Alan.',
+    aboutBody:
+      'I am a full-stack developer and founder of Weik in Halmstad, Sweden. With over three years of experience in everything from .NET and React to WordPress, Shopify and SEO, I help businesses get a website that actually makes a difference.',
+    aboutCta: 'More about Weik',
+    faqTitle: 'Questions we often get',
+    faqIntro: 'Cannot find the answer? Get in touch and we will reply within one business day.',
+    marquee: ['Websites', 'E-commerce', 'WordPress', 'Shopify', 'SEO', 'Web apps', 'Halmstad', 'Sweden'],
+  },
+}[lang];
+
+const [first, ...rest] = featuredProjects;
+---
+
+<Base lang={lang} title={copy.title} description={copy.description} alternates={routes.home}>
+  <Hero lang={lang} />
+  <Marquee items={copy.marquee} />
+
+  <section class="container-x py-24 sm:py-32">
+    <SectionHeader eyebrow={copy.painEyebrow} title={copy.painTitle} intro={copy.painIntro} />
+    <div class="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        pains[lang].map((p, idx) => (
+          <article class="reveal group relative flex min-h-64 flex-col rounded-3xl border border-line p-7 transition-colors duration-500 hover:border-fg">
+            <span class="font-mono text-xs text-muted">0{idx + 1}</span>
+            <h3 class="mt-auto pt-10 font-display text-2xl font-semibold leading-tight">{p.title}</h3>
+            <p class="mt-3 leading-relaxed text-muted">{p.body}</p>
+          </article>
+        ))
+      }
+    </div>
+    <div class="reveal mt-12 flex flex-col gap-6 rounded-3xl bg-surface p-7 sm:flex-row sm:items-center sm:justify-between sm:p-10">
+      <p class="max-w-2xl font-display text-2xl font-medium leading-snug tracking-tight sm:text-3xl">{copy.painOutro}</p>
+      <a href={contactHref(lang)} class="btn btn-primary shrink-0">
+        {i.ctaPrimary}
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="container-x py-24 sm:py-32" id="tjanster">
+    <SectionHeader eyebrow={copy.servicesEyebrow} title={copy.servicesTitle} intro={copy.servicesIntro} />
+    <div class="mt-16">
+      <ServiceList lang={lang} />
+    </div>
+    <div class="mt-10">
+      <a href={routes.services[lang]} class="btn btn-ghost">
+        {i.allServices}
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="container-x py-24 sm:py-32">
+    <SectionHeader eyebrow={copy.workEyebrow} title={copy.workTitle} intro={copy.workIntro} />
+    <div class="mt-16 grid gap-x-8 gap-y-16 lg:grid-cols-12">
+      <div class="lg:col-span-7">
+        <ProjectCard project={first} lang={lang} size="lg" />
+      </div>
+      <div class="lg:col-span-5 lg:pt-32">
+        <ProjectCard project={rest[0]} lang={lang} />
+      </div>
+      <div class="lg:col-span-5 lg:pt-32">
+        <ProjectCard project={rest[1]} lang={lang} />
+      </div>
+      <div class="lg:col-span-7">
+        <ProjectCard project={rest[2]} lang={lang} size="lg" />
+      </div>
+    </div>
+    <div class="mt-16 flex justify-center">
+      <a href={routes.projects[lang]} class="btn btn-ghost">
+        {i.allProjects}
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </section>
+
+  <ProcessSection lang={lang} />
+
+  <section class="relative overflow-hidden bg-fg py-24 text-bg sm:py-32">
+    <div class="container-x">
+      <p class="eyebrow reveal !text-bg/60">{copy.whyEyebrow}</p>
+      <h2 class="h-section reveal mt-5 max-w-4xl">{copy.whyTitle}</h2>
+      <div class="mt-16 grid gap-px overflow-hidden rounded-3xl bg-bg/15 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          why[lang].map((w) => (
+            <div class="reveal bg-fg p-8">
+              <span class="block size-2.5 rounded-full bg-accent ring-1 ring-bg/30" aria-hidden="true" />
+              <h3 class="mt-8 font-display text-2xl font-semibold">{w.title}</h3>
+              <p class="mt-3 leading-relaxed opacity-70">{w.body}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="container-x py-24 sm:py-32">
+    <div class="grid items-center gap-12 lg:grid-cols-12">
+      <div class="reveal-scale relative overflow-hidden rounded-3xl bg-black lg:col-span-5">
+        <Image
+          src={portrait}
+          alt={lang === 'sv' ? 'Alan Weik, fullstackutvecklare och grundare av Weik i Halmstad' : 'Alan Weik, full-stack developer and founder of Weik in Halmstad'}
+          widths={[400, 700, 900]}
+          sizes="(min-width: 1024px) 40vw, 100vw"
+          class="aspect-[4/5] w-full object-cover"
+        />
+      </div>
+      <div class="lg:col-span-6 lg:col-start-7">
+        <p class="eyebrow reveal">{copy.aboutEyebrow}</p>
+        <h2 class="h-section reveal mt-5">{copy.aboutTitle}</h2>
+        <p class="reveal mt-6 text-xl leading-relaxed text-muted">{copy.aboutBody}</p>
+        <div class="reveal mt-8 flex flex-wrap gap-2">
+          {services.map((s) => <span class="chip">{s[lang].name}</span>)}
+        </div>
+        <div class="reveal mt-10 flex flex-wrap gap-3">
+          <a href={routes.about[lang]} class="btn btn-ghost">
+            {copy.aboutCta}
+            <span class="arrow" aria-hidden="true">→</span>
+          </a>
+          <a href={contactHref(lang)} class="btn btn-primary">{i.ctaPrimary}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <FaqSection faq={homeFaq[lang]} title={copy.faqTitle} intro={copy.faqIntro} />
+  <CtaBlock lang={lang} />
+</Base>

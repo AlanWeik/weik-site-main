@@ -1,0 +1,95 @@
+---
+import Base from '@/layouts/Base.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import ContactForm from '@/components/ContactForm.astro';
+import FaqSection from '@/components/FaqSection.astro';
+import { site } from '@/config/site';
+import { contactFaq } from '@/data/content';
+import { routes, t, type Lang } from '@/i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const i = t(lang);
+const copy = {
+  sv: {
+    title: 'Kontakt – boka ett gratis samtal med Weik i Halmstad',
+    description:
+      'Kontakta Weik, fullstackutvecklare i Halmstad. Berätta om ditt projekt och boka ett kostnadsfritt samtal om hemsida, e-handel eller SEO. Svar inom en arbetsdag.',
+    eyebrow: 'Kontakt',
+    h1: 'Låt oss prata om ditt projekt.',
+    lead: 'Fyll i formuläret så hör vi av oss inom en arbetsdag för att boka ett kostnadsfritt samtal på 30 minuter.',
+    next: 'Vad händer sen?',
+    steps: [
+      'Vi läser din förfrågan och svarar inom en arbetsdag.',
+      'Vi bokar ett gratis samtal och går igenom dina mål.',
+      'Du får ett konkret förslag med fast pris.',
+    ],
+    direct: 'Hellre direkt?',
+    location: 'Baserade i Halmstad – träffas gärna i Halland eller digitalt.',
+    faqTitle: 'Innan du hör av dig',
+  },
+  en: {
+    title: 'Contact – book a free call with Weik',
+    description:
+      'Contact Weik, full-stack web studio in Halmstad, Sweden. Tell us about your project and book a free call about your website, e-commerce or SEO. Reply within one business day.',
+    eyebrow: 'Contact',
+    h1: 'Let’s talk about your project.',
+    lead: 'Fill in the form and we will get back to you within one business day to book a free 30-minute call.',
+    next: 'What happens next?',
+    steps: [
+      'We read your enquiry and reply within one business day.',
+      'We book a free call and go through your goals.',
+      'You get a concrete proposal with a fixed price.',
+    ],
+    direct: 'Prefer direct?',
+    location: 'Based in Halmstad, Sweden – happy to meet in person or online.',
+    faqTitle: 'Before you get in touch',
+  },
+}[lang];
+const crumbs = [
+  { name: i.breadcrumbHome, href: routes.home[lang] },
+  { name: i.nav.contact, href: routes.contact[lang] },
+];
+---
+
+<Base lang={lang} title={copy.title} description={copy.description} alternates={routes.contact} hideStickyCta>
+  <section class="container-x pb-20 pt-36 sm:pt-44">
+    <Breadcrumbs items={crumbs} />
+    <div class="mt-10 grid gap-14 lg:grid-cols-12">
+      <div class="hero-enter lg:col-span-5">
+        <p class="eyebrow">{copy.eyebrow}</p>
+        <h1 class="mt-6 font-display text-[clamp(2.75rem,6vw,5.5rem)] font-semibold leading-[0.95]">{copy.h1}</h1>
+        <p class="mt-8 text-xl leading-relaxed text-muted">{copy.lead}</p>
+
+        <div class="mt-12">
+          <h2 class="eyebrow">{copy.next}</h2>
+          <ol class="mt-5 space-y-4">
+            {
+              copy.steps.map((s, idx) => (
+                <li class="flex gap-4">
+                  <span class="grid size-8 shrink-0 place-items-center rounded-full bg-accent font-mono text-xs text-accent-ink">{idx + 1}</span>
+                  <span class="pt-1 leading-relaxed">{s}</span>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+
+        <div class="mt-12 border-t border-line pt-8">
+          <h2 class="eyebrow">{copy.direct}</h2>
+          <a href={`mailto:${site.email}`} class="mt-4 block font-display text-2xl font-medium tracking-tight link-u w-fit sm:text-3xl">{site.email}</a>
+          <a href={site.linkedin} target="_blank" rel="noopener" class="mt-3 inline-block link-u">LinkedIn ↗</a>
+          <p class="mt-6 text-sm text-muted">{copy.location}</p>
+        </div>
+      </div>
+
+      <div class="lg:col-span-7">
+        <ContactForm lang={lang} />
+      </div>
+    </div>
+  </section>
+
+  <FaqSection faq={contactFaq[lang]} title={copy.faqTitle} />
+</Base>

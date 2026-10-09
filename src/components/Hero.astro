@@ -1,0 +1,162 @@
+---
+import { site } from '@/config/site';
+import { contactHref, routes, t, type Lang } from '@/i18n';
+import HeroSpline from './HeroSpline';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const i = t(lang);
+const copy = {
+  sv: {
+    eyebrow: 'Webbstudio · Halmstad, Halland',
+    h1a: 'Fullstackutvecklare i Halmstad.',
+    h1b: 'Sajter som säljer.',
+    lead: 'Vi designar och bygger snabba hemsidor, webbshoppar och webbappar för företag i Halland och hela Sverige – med SEO och konvertering inbyggt från dag ett.',
+    micro: ['Svar inom en arbetsdag', 'Fast pris', 'Du äger allt'],
+  },
+  en: {
+    eyebrow: 'Web studio · Halmstad, Sweden',
+    h1a: 'Full-stack developer in Halmstad.',
+    h1b: 'Websites that sell.',
+    lead: 'We design and build fast websites, online stores and web apps for businesses in Sweden and beyond – with SEO and conversion built in from day one.',
+    micro: ['Reply within one business day', 'Fixed price', 'You own everything'],
+  },
+}[lang];
+---
+
+<section class="hero relative isolate flex min-h-[100svh] flex-col overflow-hidden">
+  <div class="absolute inset-0 -z-10" aria-hidden="true">
+    <div class="hero-orb absolute right-[-26vw] top-[-9vh] size-[80vw] sm:right-[-12vw] sm:top-[-6vh] sm:size-[72vw] lg:right-[-6vw] lg:size-[58vw]">
+      <div class="orb-glow absolute inset-[12%] rounded-full"></div>
+      <div class="orb-core absolute inset-[18%] rounded-full"></div>
+      <svg class="orb-rings absolute inset-0 size-full" viewBox="0 0 400 400" fill="none">
+        <circle cx="200" cy="200" r="198" stroke="currentColor" stroke-opacity=".14"></circle>
+        <circle cx="200" cy="200" r="160" stroke="currentColor" stroke-opacity=".1" stroke-dasharray="2 6"></circle>
+        <ellipse cx="200" cy="200" rx="198" ry="64" stroke="currentColor" stroke-opacity=".12"></ellipse>
+        <ellipse cx="200" cy="200" rx="64" ry="198" stroke="currentColor" stroke-opacity=".08"></ellipse>
+      </svg>
+    </div>
+    {site.splineScene && <HeroSpline client:idle scene={site.splineScene} />}
+    <div class="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-bg via-bg/70 to-transparent"></div>
+    <div class="grain"></div>
+  </div>
+
+  <div class="container-x pointer-events-none flex flex-1 flex-col justify-end pb-10 pt-28 sm:pb-14">
+    <div class="hero-enter">
+      <p class="eyebrow">{copy.eyebrow}</p>
+      <p class="display-xl mt-6 -ml-[0.04em]" aria-hidden="true">weik</p>
+      <div class="mt-8 grid gap-8 lg:mt-10 lg:grid-cols-12 lg:items-end">
+        <h1 class="font-display text-[clamp(2.1rem,5vw,4.25rem)] font-semibold leading-[0.98] lg:col-span-7">
+          <span class="block text-muted">{copy.h1a}</span>
+          <span class="block">{copy.h1b}</span>
+        </h1>
+        <div class="lg:col-span-5">
+          <p class="max-w-lg text-lg leading-relaxed text-muted">{copy.lead}</p>
+          <div class="pointer-events-auto mt-7 flex flex-wrap gap-3">
+            <a href={contactHref(lang)} class="btn btn-primary !min-h-14 !px-7 text-base">
+              {i.ctaPrimary}
+              <span class="arrow" aria-hidden="true">→</span>
+            </a>
+            <a href={routes.projects[lang]} class="btn btn-ghost !min-h-14 !px-7 text-base bg-bg/40 backdrop-blur">
+              {i.ctaCases}
+            </a>
+          </div>
+          <ul class="mt-6 flex flex-wrap gap-x-5 gap-y-2 font-mono text-[0.7rem] uppercase tracking-wider text-muted">
+            {
+              copy.micro.map((m) => (
+                <li class="flex items-center gap-2">
+                  <svg class="size-3 text-fg" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                    <path d="M2 6.5 4.8 9 10 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  {m}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p
+    class="pointer-events-none absolute right-[clamp(1.25rem,4vw,3rem)] top-28 hidden font-mono text-[0.7rem] uppercase leading-relaxed tracking-wider text-muted md:block"
+    aria-hidden="true"
+  >
+    56.6745° N<br />12.8578° E<br />Halmstad, SE
+  </p>
+</section>
+
+<style>
+  .hero-orb {
+    color: var(--fg);
+    transition: opacity 1.2s ease;
+  }
+  :global([data-spline='ready']) .hero-orb {
+    opacity: 0;
+  }
+  /* Safari clips filter:blur to a hard rectangle inside overflow/isolation.
+     Soft edges via radial-gradient + circular mask instead of blur. */
+  .orb-core {
+    overflow: hidden;
+    border-radius: 50%;
+    background: #1b1d12;
+    -webkit-mask-image: radial-gradient(closest-side, #000 99.5%, transparent 100%);
+    mask-image: radial-gradient(closest-side, #000 99.5%, transparent 100%);
+  }
+  .orb-core::before {
+    content: '';
+    position: absolute;
+    inset: -35%;
+    border-radius: 50%;
+    background:
+      conic-gradient(from 0deg, var(--accent), #f6ffd9, #6f8a00, #0b0b0c, #c8f000, #ffffff, var(--accent)),
+      radial-gradient(circle at 50% 50%, rgb(212 255 46 / 0.55), transparent 62%);
+    background-blend-mode: screen;
+    opacity: 0.95;
+    animation: orb-spin 18s linear infinite;
+    will-change: transform;
+  }
+  .orb-core::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background:
+      radial-gradient(circle at 30% 24%, rgb(255 255 255 / 0.85), rgb(255 255 255 / 0) 30%),
+      radial-gradient(circle at 72% 82%, rgb(0 0 0 / 0.7), rgb(0 0 0 / 0) 60%);
+    box-shadow:
+      inset -40px -50px 90px rgb(0 0 0 / 0.5),
+      inset 20px 30px 60px rgb(255 255 255 / 0.25);
+  }
+  .orb-glow {
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 50%, var(--accent) 0%, rgb(212 255 46 / 0.45) 38%, transparent 72%);
+    opacity: 0.55;
+    animation: orb-breathe 8s ease-in-out infinite;
+    will-change: transform, opacity;
+  }
+  .orb-rings {
+    animation: orb-spin 60s linear infinite reverse;
+    will-change: transform;
+  }
+  @keyframes orb-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes orb-breathe {
+    50% {
+      opacity: 0.8;
+      transform: scale(1.08);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .orb-core::before,
+    .orb-glow,
+    .orb-rings {
+      animation: none;
+    }
+  }
+</style>

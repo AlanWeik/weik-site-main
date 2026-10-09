@@ -1,0 +1,71 @@
+---
+import { site } from '@/config/site';
+import { routes, serviceHref, t, type Lang } from '@/i18n';
+import { services } from '@/data/services';
+import Logo from './Logo.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const i = t(lang);
+const year = new Date().getFullYear();
+---
+
+<footer class="relative mt-10 overflow-hidden border-t border-line pb-28 pt-20 lg:pb-10">
+  <div class="container-x">
+    <div class="grid gap-12 lg:grid-cols-12">
+      <div class="lg:col-span-5">
+        <p class="max-w-sm text-lg leading-relaxed text-muted">{i.footer.tagline}</p>
+        <a href={`mailto:${site.email}`} class="mt-8 inline-block font-display text-2xl font-medium tracking-tight link-u sm:text-3xl">
+          {site.email}
+        </a>
+      </div>
+
+      <nav class="lg:col-span-3" aria-label={i.footer.services}>
+        <p class="eyebrow">{i.footer.services}</p>
+        <ul class="mt-5 space-y-2.5">
+          {
+            services.map((s) => (
+              <li>
+                <a href={serviceHref(lang, s[lang].slug)} class="link-u text-[0.95rem]">
+                  {s[lang].name}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <nav class="lg:col-span-2" aria-label={i.footer.company}>
+        <p class="eyebrow">{i.footer.company}</p>
+        <ul class="mt-5 space-y-2.5 text-[0.95rem]">
+          <li><a href={routes.projects[lang]} class="link-u">{i.nav.projects}</a></li>
+          <li><a href={routes.about[lang]} class="link-u">{i.nav.about}</a></li>
+          <li><a href={routes.contact[lang]} class="link-u">{i.nav.contact}</a></li>
+          <li><a href={site.cv} class="link-u" target="_blank" rel="noopener">{i.footer.cv}</a></li>
+        </ul>
+      </nav>
+
+      <div class="lg:col-span-2">
+        <p class="eyebrow">{i.footer.contact}</p>
+        <ul class="mt-5 space-y-2.5 text-[0.95rem]">
+          <li><a href={site.linkedin} class="link-u" target="_blank" rel="noopener">LinkedIn</a></li>
+          <li><a href={`mailto:${site.email}`} class="link-u">{lang === 'sv' ? 'E-post' : 'Email'}</a></li>
+        </ul>
+        <address class="mt-5 not-italic text-sm leading-relaxed text-muted">
+          Weik<br />Halmstad, {site.region}<br />{lang === 'sv' ? 'Sverige' : 'Sweden'}
+        </address>
+      </div>
+    </div>
+
+    <div aria-hidden="true" class="mt-20 select-none leading-none text-[clamp(6rem,30vw,28rem)] -mb-[0.2em]">
+      <Logo />
+    </div>
+
+    <div class="mt-8 flex flex-col gap-3 border-t border-line pt-6 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
+      <p>© {year} Weik. {i.footer.rights}</p>
+      <p>{i.footer.based}</p>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,159 @@
+---
+import { Image, getImage } from 'astro:assets';
+import Base from '@/layouts/Base.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import ProjectCard from '@/components/ProjectCard.astro';
+import CtaBlock from '@/components/CtaBlock.astro';
+import { projects, type Project } from '@/data/projects';
+import { services } from '@/data/services';
+import { contactHref, projectHref, routes, serviceHref, t, type Lang } from '@/i18n';
+import { creativeWork } from '@/lib/schema';
+
+interface Props {
+  lang: Lang;
+  project: Project;
+}
+const { lang, project: p } = Astro.props;
+const c = p[lang];
+const i = t(lang);
+const href = projectHref(lang, p.slug);
+const alternates = { sv: projectHref('sv', p.slug), en: projectHref('en', p.slug) };
+const og = await getImage({ src: p.image, width: 1200, format: 'jpg' });
+const idx = projects.findIndex((x) => x.slug === p.slug);
+const next = projects[(idx + 1) % projects.length];
+const usedServices = services.filter((s) => p.services.includes(s.id));
+
+const copy = {
+  sv: {
+    title: `${p.name} – ${c.category.toLowerCase()} | Case från Weik`,
+    challenge: 'Utmaningen',
+    solution: 'Lösningen',
+    highlights: 'Höjdpunkter',
+    services: 'Tjänster',
+    next: 'Nästa case',
+    ctaTitle: 'Vill du ha något liknande?',
+    ctaBody: `Berätta om ditt projekt så visar vi hur vi kan göra samma sak för dig som för ${p.name}.`,
+  },
+  en: {
+    title: `${p.name} – ${c.category.toLowerCase()} | Work by Weik`,
+    challenge: 'The challenge',
+    solution: 'The solution',
+    highlights: 'Highlights',
+    services: 'Services',
+    next: 'Next project',
+    ctaTitle: 'Want something similar?',
+    ctaBody: `Tell us about your project and we will show you how we can do for you what we did for ${p.name}.`,
+  },
+}[lang];
+
+const crumbs = [
+  { name: i.breadcrumbHome, href: routes.home[lang] },
+  { name: i.nav.projects, href: routes.projects[lang] },
+  { name: p.name, href },
+];
+---
+
+<Base
+  lang={lang}
+  title={copy.title}
+  description={c.summary}
+  alternates={alternates}
+  image={og.src}
+  ctaType={p.services[0]}
+  schema={[creativeWork({ name: p.name, description: c.summary, url: href, image: og.src, live: p.url })]}
+>
+  <section class="container-x pb-14 pt-36 sm:pt-44">
+    <Breadcrumbs items={crumbs} />
+    <div class="hero-enter mt-10">
+      <p class="eyebrow">{c.category}</p>
+      <h1 class="display-xl mt-6 !text-[clamp(3.5rem,13vw,12rem)]">{p.name}</h1>
+      <div class="mt-10 grid gap-8 lg:grid-cols-12 lg:items-end">
+        <p class="text-xl leading-relaxed text-muted lg:col-span-7">{c.summary}</p>
+        <div class="flex flex-wrap gap-3 lg:col-span-5 lg:justify-end">
+          <a href={p.url} target="_blank" rel="noopener" class="btn btn-ghost !min-h-14 !px-7 text-base">
+            {p.kind === 'live' ? i.visitSite : i.viewDemo}
+            <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-x">
+    <div class="reveal-scale overflow-hidden rounded-[2rem] border border-line bg-surface-2">
+      <Image
+        src={p.image}
+        alt={`${p.name} – ${lang === 'sv' ? 'skärmdump av startsidan' : 'homepage screenshot'}`}
+        widths={[640, 1000, 1600]}
+        sizes="(min-width: 1400px) 1300px, 100vw"
+        loading="eager"
+        class="w-full"
+      />
+    </div>
+  </section>
+
+  <section class="container-x py-24 sm:py-32">
+    <div class="grid gap-16 lg:grid-cols-12">
+      <aside class="space-y-10 lg:col-span-4">
+        <div class="reveal">
+          <p class="eyebrow">{copy.services}</p>
+          <ul class="mt-4 space-y-2">
+            {
+              usedServices.map((s) => (
+                <li>
+                  <a href={serviceHref(lang, s[lang].slug)} class="link-u text-lg">
+                    {s[lang].name}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <div class="reveal">
+          <p class="eyebrow">{lang === 'sv' ? 'Omfattning' : 'Scope'}</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            {c.tags.map((tag) => <span class="chip">{tag}</span>)}
+          </div>
+        </div>
+      </aside>
+      <div class="space-y-16 lg:col-span-8">
+        <div class="reveal">
+          <h2 class="font-display text-4xl font-semibold sm:text-5xl">{copy.challenge}</h2>
+          <p class="mt-6 text-xl leading-relaxed text-muted">{c.challenge}</p>
+        </div>
+        <div class="reveal">
+          <h2 class="font-display text-4xl font-semibold sm:text-5xl">{copy.solution}</h2>
+          <p class="mt-6 text-xl leading-relaxed text-muted">{c.solution}</p>
+        </div>
+        <div class="reveal">
+          <h2 class="font-display text-4xl font-semibold sm:text-5xl">{copy.highlights}</h2>
+          <ul class="mt-6 border-t border-line">
+            {
+              c.highlights.map((h) => (
+                <li class="flex items-baseline gap-4 border-b border-line py-5 text-lg">
+                  <span class="size-2 shrink-0 translate-y-[-2px] rounded-full bg-accent ring-1 ring-line" aria-hidden="true" />
+                  {h}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <div class="reveal">
+          <a href={contactHref(lang, p.services[0])} class="btn btn-primary">
+            {lang === 'sv' ? 'Starta ett liknande projekt' : 'Start a similar project'}
+            <span class="arrow" aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CtaBlock lang={lang} title={copy.ctaTitle} body={copy.ctaBody} type={p.services[0]} />
+
+  <section class="container-x py-16">
+    <p class="eyebrow">{copy.next}</p>
+    <div class="mt-8 max-w-2xl">
+      <ProjectCard project={next} lang={lang} />
+    </div>
+  </section>
+</Base>

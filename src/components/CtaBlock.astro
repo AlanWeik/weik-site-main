@@ -1,0 +1,64 @@
+---
+import { site } from '@/config/site';
+import { contactHref, t, type Lang } from '@/i18n';
+
+interface Props {
+  lang: Lang;
+  title?: string;
+  body?: string;
+  type?: string;
+}
+
+const { lang, type } = Astro.props;
+const i = t(lang);
+const copy = {
+  sv: {
+    title: 'Redo att få en sajt som jobbar för dig?',
+    body: 'Boka ett kostnadsfritt samtal på 30 minuter. Du får konkreta förbättringsförslag – oavsett om vi jobbar ihop eller inte.',
+    points: ['Svar inom en arbetsdag', 'Fast pris', 'Ingen bindningstid'],
+    or: 'eller mejla',
+  },
+  en: {
+    title: 'Ready for a website that works for you?',
+    body: 'Book a free 30-minute call. You get concrete improvement ideas – whether we work together or not.',
+    points: ['Reply within one business day', 'Fixed price', 'No lock-in'],
+    or: 'or email',
+  },
+}[lang];
+const title = Astro.props.title ?? copy.title;
+const body = Astro.props.body ?? copy.body;
+---
+
+<section class="container-x py-16 sm:py-24">
+  <div class="reveal-scale relative overflow-hidden rounded-[2rem] bg-fg px-6 py-16 text-bg sm:px-12 sm:py-24 lg:px-20">
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute -right-24 -top-24 size-[28rem] rounded-full bg-accent opacity-90 blur-[2px] sm:-right-16 sm:-top-40 sm:size-[36rem]"
+      style="mask-image: radial-gradient(circle at 30% 70%, transparent 0 38%, #000 39%);"
+    >
+    </div>
+    <div class="relative max-w-3xl">
+      <h2 class="font-display text-[clamp(2.5rem,6.5vw,5.5rem)] font-semibold leading-[0.92]">{title}</h2>
+      <p class="mt-6 max-w-xl text-lg leading-relaxed opacity-75">{body}</p>
+      <div class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
+        <a href={contactHref(lang, type)} class="btn btn-primary !min-h-14 !px-7 text-base hover:!bg-bg hover:!text-fg">
+          {i.ctaPrimary}
+          <span class="arrow" aria-hidden="true">→</span>
+        </a>
+        <p class="text-sm opacity-70">
+          {copy.or} <a href={`mailto:${site.email}`} class="link-u opacity-100">{site.email}</a>
+        </p>
+      </div>
+      <ul class="mt-10 flex flex-wrap gap-x-6 gap-y-2 font-mono text-xs uppercase tracking-wider opacity-70">
+        {
+          copy.points.map((p) => (
+            <li class="flex items-center gap-2">
+              <span class="size-1.5 rounded-full bg-accent" aria-hidden="true" />
+              {p}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,62 @@
+---
+import Base from '@/layouts/Base.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import ProjectCard from '@/components/ProjectCard.astro';
+import CtaBlock from '@/components/CtaBlock.astro';
+import { projects } from '@/data/projects';
+import { routes, t, type Lang } from '@/i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const i = t(lang);
+const copy = {
+  sv: {
+    title: 'Case – hemsidor & webbshoppar vi byggt | Weik, Halmstad',
+    description:
+      'Se case från Weik: webbshoppar, företagssajter och webbappar för varumärken som Kapten Mat, Wundies, Träningsprodukter och Kind by Julia.',
+    eyebrow: 'Case',
+    h1: 'Projekt som syns, säljer och håller.',
+    lead: 'Ett urval av e-handel, företagssajter och webbappar. Varje projekt började med samma fråga: vad behöver sajten åstadkomma för affären?',
+    ctaTitle: 'Vill du bli nästa case?',
+  },
+  en: {
+    title: 'Work – websites & online stores we have built | Weik',
+    description:
+      'See work from Weik: online stores, corporate websites and web apps for brands like Kapten Mat, Wundies, Träningsprodukter and Kind by Julia.',
+    eyebrow: 'Work',
+    h1: 'Projects that get found, sell and last.',
+    lead: 'A selection of e-commerce, corporate websites and web apps. Every project started with the same question: what does the site need to achieve for the business?',
+    ctaTitle: 'Want to be our next case study?',
+  },
+}[lang];
+const crumbs = [
+  { name: i.breadcrumbHome, href: routes.home[lang] },
+  { name: i.nav.projects, href: routes.projects[lang] },
+];
+---
+
+<Base lang={lang} title={copy.title} description={copy.description} alternates={routes.projects}>
+  <section class="container-x pb-16 pt-36 sm:pt-44">
+    <Breadcrumbs items={crumbs} />
+    <div class="hero-enter mt-10 grid gap-8 lg:grid-cols-12 lg:items-end">
+      <h1 class="h-section !text-[clamp(2.75rem,7vw,6.5rem)] lg:col-span-8">{copy.h1}</h1>
+      <p class="text-lg leading-relaxed text-muted lg:col-span-4">{copy.lead}</p>
+    </div>
+  </section>
+
+  <section class="container-x pb-24">
+    <div class="grid gap-x-8 gap-y-16 md:grid-cols-2">
+      {
+        projects.map((p, idx) => (
+          <div class:list={[idx % 2 === 1 && 'md:mt-24']}>
+            <ProjectCard project={p} lang={lang} headingLevel="h2" eager={idx < 2} />
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <CtaBlock lang={lang} title={copy.ctaTitle} />
+</Base>

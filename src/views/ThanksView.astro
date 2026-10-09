@@ -1,0 +1,48 @@
+---
+import Base from '@/layouts/Base.astro';
+import ProjectCard from '@/components/ProjectCard.astro';
+import { featuredProjects } from '@/data/projects';
+import { routes, type Lang } from '@/i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const copy = {
+  sv: {
+    title: 'Tack för din förfrågan | Weik',
+    description: 'Vi har tagit emot ditt meddelande och återkommer inom en arbetsdag.',
+    h1: 'Tack! Vi hör av oss inom en arbetsdag.',
+    body: 'Ditt meddelande har kommit fram. Medan du väntar kan du kika på några av våra case.',
+    back: 'Till startsidan',
+    cases: 'Se alla case',
+  },
+  en: {
+    title: 'Thanks for your enquiry | Weik',
+    description: 'We have received your message and will get back to you within one business day.',
+    h1: 'Thank you! We will be in touch within one business day.',
+    body: 'Your message has arrived. While you wait, take a look at some of our work.',
+    back: 'Back to home',
+    cases: 'See all work',
+  },
+}[lang];
+---
+
+<Base lang={lang} title={copy.title} description={copy.description} alternates={routes.thanks} noindex hideStickyCta>
+  <section class="container-x pb-20 pt-40 sm:pt-52">
+    <div class="hero-enter max-w-4xl">
+      <span class="grid size-16 place-items-center rounded-full bg-accent text-2xl text-accent-ink" aria-hidden="true">✓</span>
+      <h1 class="mt-10 font-display text-[clamp(2.75rem,6.5vw,6rem)] font-semibold leading-[0.95]">{copy.h1}</h1>
+      <p class="mt-8 max-w-xl text-xl leading-relaxed text-muted">{copy.body}</p>
+      <div class="mt-10 flex flex-wrap gap-3">
+        <a href={routes.projects[lang]} class="btn btn-primary">{copy.cases} <span class="arrow" aria-hidden="true">→</span></a>
+        <a href={routes.home[lang]} class="btn btn-ghost">{copy.back}</a>
+      </div>
+    </div>
+  </section>
+  <section class="container-x pb-24">
+    <div class="grid gap-x-8 gap-y-14 md:grid-cols-2">
+      {featuredProjects.slice(0, 2).map((p) => <ProjectCard project={p} lang={lang} />)}
+    </div>
+  </section>
+</Base>

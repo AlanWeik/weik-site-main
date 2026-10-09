@@ -1,0 +1,37 @@
+---
+import { contactHref, t, type Lang } from '@/i18n';
+
+interface Props {
+  lang: Lang;
+  type?: string;
+}
+const { lang, type } = Astro.props;
+const i = t(lang);
+---
+
+<div class="sticky-cta fixed inset-x-0 bottom-0 z-40 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:hidden">
+  <a href={contactHref(lang, type)} class="btn btn-primary w-full shadow-[0_10px_40px_-10px_rgb(0_0_0/0.45)]">
+    {i.ctaPrimary}
+    <span class="arrow" aria-hidden="true">→</span>
+  </a>
+</div>
+
+<style>
+  @supports (animation-timeline: scroll()) {
+    .sticky-cta {
+      animation: cta-in linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 60vh;
+    }
+    @keyframes cta-in {
+      from {
+        opacity: 0;
+        transform: translateY(120%);
+      }
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  }
+</style>

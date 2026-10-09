@@ -1,0 +1,23 @@
+---
+import Base from '@/layouts/Base.astro';
+import ServiceList from '@/components/ServiceList.astro';
+import { contactHref, routes, t } from '@/i18n';
+
+const i = t('sv');
+---
+
+<Base lang="sv" title="404 – sidan finns inte | Weik" description={i.notFound.body} alternates={routes.home} noindex>
+  <section class="container-x pb-16 pt-40 sm:pt-52">
+    <p class="display-xl text-muted/30" aria-hidden="true">404</p>
+    <h1 class="mt-8 font-display text-[clamp(2.5rem,6vw,5rem)] font-semibold leading-[0.95]">{i.notFound.title}</h1>
+    <p class="mt-6 max-w-xl text-xl leading-relaxed text-muted">{i.notFound.body}</p>
+    <div class="mt-10 flex flex-wrap gap-3">
+      <a href={routes.home.sv} class="btn btn-primary">{i.notFound.home} <span class="arrow" aria-hidden="true">→</span></a>
+      <a href={contactHref('sv')} class="btn btn-ghost">{i.ctaPrimary}</a>
+      <a href={routes.home.en} class="btn btn-ghost" hreflang="en">English</a>
+    </div>
+  </section>
+  <section class="container-x pb-24">
+    <ServiceList lang="sv" />
+  </section>
+</Base>

@@ -1,0 +1,32 @@
+name: Publicera till Inleed
+
+on:
+  push:
+    branches:
+      - main # Ändra till 'master' om din huvudbranch heter det
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hämta källkod
+        uses: actions/checkout@v4
+
+      - name: Konfigurera Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Installera och bygg
+        run: |
+          npm install
+          npm run build
+
+      - name: Skicka filer via FTP
+        uses: SamKirsch/ftp-deploy-action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/
+          server-dir: /domains/weik.staging.se/public_html/

@@ -1,0 +1,30 @@
+---
+import { breadcrumbs } from '@/lib/schema';
+
+interface Props {
+  items: { name: string; href: string }[];
+}
+const { items } = Astro.props;
+---
+
+<nav aria-label="Breadcrumb" class="font-mono text-xs text-muted">
+  <ol class="flex flex-wrap items-center gap-2">
+    {
+      items.map((item, idx) => (
+        <li class="flex items-center gap-2">
+          {idx > 0 && <span aria-hidden="true">/</span>}
+          {idx === items.length - 1 ? (
+            <span aria-current="page" class="text-fg">
+              {item.name}
+            </span>
+          ) : (
+            <a href={item.href} class="link-u hover:text-fg">
+              {item.name}
+            </a>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbs(items))} />
+</nav>

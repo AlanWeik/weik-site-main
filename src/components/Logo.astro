@@ -1,0 +1,10 @@
+---
+interface Props {
+  class?: string;
+}
+const { class: className = '' } = Astro.props;
+---
+
+<span class:list={['font-display font-bold tracking-[-0.06em] leading-none inline-flex items-baseline', className]}>
+  weik<span class="ml-[0.08em] inline-block size-[0.22em] rounded-full bg-accent ring-1 ring-line"></span>
+</span>

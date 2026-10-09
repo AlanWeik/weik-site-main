@@ -1,0 +1,18 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  intro?: string;
+  as?: 'h1' | 'h2';
+  class?: string;
+}
+const { eyebrow, title, intro, as: Tag = 'h2', class: className = '' } = Astro.props;
+---
+
+<div class:list={['grid gap-6 lg:grid-cols-12 lg:items-end', className]}>
+  <div class="lg:col-span-8">
+    {eyebrow && <p class="eyebrow reveal">{eyebrow}</p>}
+    <Tag class="h-section mt-5 reveal">{title}</Tag>
+  </div>
+  {intro && <p class="reveal text-lg leading-relaxed text-muted lg:col-span-4">{intro}</p>}
+</div>

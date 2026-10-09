@@ -1,0 +1,171 @@
+---
+import Base from '@/layouts/Base.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import ServiceList from '@/components/ServiceList.astro';
+import ProjectCard from '@/components/ProjectCard.astro';
+import ProcessSection from '@/components/ProcessSection.astro';
+import FaqSection from '@/components/FaqSection.astro';
+import CtaBlock from '@/components/CtaBlock.astro';
+import type { Service } from '@/data/services';
+import { getProject } from '@/data/projects';
+import { contactHref, routes, serviceHref, t, type Lang } from '@/i18n';
+import { service as serviceSchema } from '@/lib/schema';
+
+interface Props {
+  lang: Lang;
+  service: Service;
+}
+const { lang, service } = Astro.props;
+const s = service[lang];
+const i = t(lang);
+const href = serviceHref(lang, s.slug);
+const alternates = { sv: serviceHref('sv', service.sv.slug), en: serviceHref('en', service.en.slug) };
+const related = service.relatedProjects.map(getProject).filter((p) => p !== undefined).slice(0, 2);
+
+const copy = {
+  sv: {
+    deliverablesTitle: 'Det här ingår',
+    idealTitle: 'Passar dig som',
+    relatedTitle: 'Case inom ' + s.name.toLowerCase(),
+    otherTitle: 'Fler tjänster',
+    faqTitle: `Vanliga frågor om ${s.name.toLowerCase()}`,
+    ctaTitle: `Redo att komma igång med ${s.name.toLowerCase()}?`,
+  },
+  en: {
+    deliverablesTitle: 'What is included',
+    idealTitle: 'A great fit if you are',
+    relatedTitle: 'Related work',
+    otherTitle: 'More services',
+    faqTitle: `Common questions about ${s.name.toLowerCase()}`,
+    ctaTitle: `Ready to get started with ${s.name.toLowerCase()}?`,
+  },
+}[lang];
+
+const crumbs = [
+  { name: i.breadcrumbHome, href: routes.home[lang] },
+  { name: i.nav.services, href: routes.services[lang] },
+  { name: s.name, href },
+];
+---
+
+<Base
+  lang={lang}
+  title={s.metaTitle}
+  description={s.metaDescription}
+  alternates={alternates}
+  ctaType={service.id}
+  schema={[serviceSchema({ name: s.name, description: s.metaDescription, url: href, lang })]}
+>
+  <section class="container-x pb-20 pt-36 sm:pt-44">
+    <Breadcrumbs items={crumbs} />
+    <div class="hero-enter mt-10">
+      <p class="eyebrow">{service.number} — {s.name}</p>
+      <h1 class="mt-6 max-w-5xl font-display text-[clamp(2.5rem,6.5vw,6rem)] font-semibold leading-[0.95]">{s.h1}</h1>
+      <div class="mt-10 grid gap-8 lg:grid-cols-12 lg:items-end">
+        <p class="text-xl leading-relaxed text-muted lg:col-span-7">{s.lead}</p>
+        <div class="flex flex-wrap gap-3 lg:col-span-5 lg:justify-end">
+          <a href={contactHref(lang, service.id)} class="btn btn-primary !min-h-14 !px-7 text-base">
+            {i.ctaQuote}
+            <span class="arrow" aria-hidden="true">→</span>
+          </a>
+          <a href="#case" class="btn btn-ghost !min-h-14 !px-7 text-base">{i.ctaCases}</a>
+        </div>
+      </div>
+      <div class="mt-10 flex flex-wrap gap-2">
+        {service.tags.map((tag) => <span class="chip">{tag}</span>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="container-x py-20 sm:py-28">
+    <div class="grid gap-12 lg:grid-cols-12">
+      <div class="lg:col-span-5">
+        <p class="eyebrow reveal">{lang === 'sv' ? 'Utmaningen' : 'The challenge'}</p>
+        <h2 class="h-section reveal mt-5">{s.problemsTitle}</h2>
+      </div>
+      <ul class="space-y-4 lg:col-span-7">
+        {
+          s.problems.map((p) => (
+            <li class="reveal flex gap-5 rounded-3xl border border-line p-6 sm:p-8">
+              <span class="mt-1 grid size-7 shrink-0 place-items-center rounded-full border border-line text-sm" aria-hidden="true">
+                ✕
+              </span>
+              <p class="text-lg leading-relaxed">{p}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="bg-fg py-24 text-bg sm:py-32">
+    <div class="container-x">
+      <div class="grid gap-10 lg:grid-cols-12">
+        <div class="lg:col-span-6">
+          <p class="eyebrow reveal !text-bg/60">{lang === 'sv' ? 'Lösningen' : 'The solution'}</p>
+          <h2 class="h-section reveal mt-5">{s.solutionTitle}</h2>
+        </div>
+        <p class="reveal text-xl leading-relaxed opacity-75 lg:col-span-6 lg:pt-12">{s.solution}</p>
+      </div>
+      <div class="mt-16 grid gap-px overflow-hidden rounded-3xl bg-bg/15 md:grid-cols-3">
+        {
+          s.outcomes.map((o) => (
+            <div class="reveal bg-fg p-8">
+              <span class="block size-2.5 rounded-full bg-accent ring-1 ring-bg/30" aria-hidden="true" />
+              <h3 class="mt-8 font-display text-2xl font-semibold">{o.title}</h3>
+              <p class="mt-3 leading-relaxed opacity-70">{o.body}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="container-x py-24 sm:py-32">
+    <div class="grid gap-12 lg:grid-cols-12">
+      <div class="lg:col-span-5">
+        <h2 class="h-section reveal">{copy.deliverablesTitle}</h2>
+        <div class="reveal mt-10 rounded-3xl bg-surface p-7 sm:p-8">
+          <p class="eyebrow">{copy.idealTitle}</p>
+          <p class="mt-4 text-lg leading-relaxed">{s.idealFor}</p>
+          <a href={contactHref(lang, service.id)} class="btn btn-primary mt-8">
+            {i.ctaPrimary}
+            <span class="arrow" aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+      <ul class="lg:col-span-7 border-t border-line">
+        {
+          s.deliverables.map((d, idx) => (
+            <li class="reveal flex items-baseline gap-6 border-b border-line py-6">
+              <span class="font-mono text-xs text-muted">{String(idx + 1).padStart(2, '0')}</span>
+              <span class="font-display text-xl font-medium tracking-tight sm:text-2xl">{d}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  {
+    related.length > 0 && (
+      <section id="case" class="container-x py-24 sm:py-32">
+        <h2 class="h-section reveal">{copy.relatedTitle}</h2>
+        <div class="mt-14 grid gap-x-8 gap-y-14 md:grid-cols-2">
+          {related.map((p) => p && <ProjectCard project={p} lang={lang} />)}
+        </div>
+      </section>
+    )
+  }
+
+  <ProcessSection lang={lang} />
+  <FaqSection faq={s.faq} title={copy.faqTitle} />
+  <CtaBlock lang={lang} type={service.id} title={copy.ctaTitle} />
+
+  <section class="container-x pb-16">
+    <h2 class="eyebrow">{copy.otherTitle}</h2>
+    <div class="mt-6">
+      <ServiceList lang={lang} exclude={service.id} />
+    </div>
+  </section>
+</Base>

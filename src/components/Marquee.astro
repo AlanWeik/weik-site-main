@@ -1,0 +1,20 @@
+---
+interface Props {
+  items: string[];
+}
+const { items } = Astro.props;
+const row = [...items, ...items];
+---
+
+<div class="relative overflow-hidden border-y border-line py-6" aria-hidden="true">
+  <div class="marquee-track flex w-max gap-10 whitespace-nowrap">
+    {
+      row.map((item) => (
+        <span class="flex items-center gap-10 font-display text-3xl font-medium tracking-tight sm:text-5xl">
+          {item}
+          <span class="inline-block size-3 rounded-full bg-accent ring-1 ring-line" />
+        </span>
+      ))
+    }
+  </div>
+</div>

@@ -1,0 +1,93 @@
+---
+import '@/styles/global.css';
+import { site } from '@/config/site';
+import { t, type Lang, type Alternates } from '@/i18n';
+import { abs, organization } from '@/lib/schema';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import StickyCta from '@/components/StickyCta.astro';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  alternates: Alternates;
+  image?: string;
+  noindex?: boolean;
+  schema?: object[];
+  hideStickyCta?: boolean;
+  ctaType?: string;
+}
+
+const { lang, title, description, alternates, image = site.ogImage, noindex = false, schema = [], hideStickyCta = false, ctaType } =
+  Astro.props;
+const i = t(lang);
+const canonical = abs(alternates[lang]);
+const ogImage = abs(image);
+const jsonLd = [organization(lang), ...schema];
+---
+
+<!doctype html>
+<html lang={lang === 'sv' ? 'sv' : 'en'}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    {
+      !noindex && (
+        <>
+          <link rel="alternate" hreflang="sv" href={abs(alternates.sv)} />
+          <link rel="alternate" hreflang="en" href={abs(alternates.en)} />
+          <link rel="alternate" hreflang="x-default" href={abs(alternates.sv)} />
+        </>
+      )
+    }
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:locale" content={i.locale} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <meta name="geo.region" content="SE-N" />
+    <meta name="geo.placename" content="Halmstad" />
+    <meta name="geo.position" content={`${site.geo.lat};${site.geo.lng}`} />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#f3f3f0" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#09090a" media="(prefers-color-scheme: dark)" />
+    <link rel="sitemap" href="/sitemap.xml" />
+
+    <script is:inline>
+      (() => {
+        const stored = localStorage.getItem('theme');
+        const dark = stored ? stored === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.classList.toggle('dark', dark);
+      })();
+    </script>
+
+    {jsonLd.map((data) => <script type="application/ld+json" set:html={JSON.stringify(data)} />)}
+    <slot name="head" />
+  </head>
+  <body class="bg-bg text-fg min-h-dvh overflow-x-clip">
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] btn btn-primary">{i.skip}</a>
+    <Header lang={lang} alternates={alternates} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+    {!hideStickyCta && <StickyCta lang={lang} type={ctaType} />}
+  </body>
+</html>

@@ -1,0 +1,31 @@
+---
+import { process } from '@/data/content';
+import type { Lang } from '@/i18n';
+import SectionHeader from './SectionHeader.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const copy = {
+  sv: { eyebrow: 'Så jobbar vi', title: 'Från första samtal till lansering – utan krångel.', intro: 'En tydlig process med fasta priser och en kontaktperson. Du vet alltid var projektet står.' },
+  en: { eyebrow: 'How we work', title: 'From first call to launch – without the hassle.', intro: 'A clear process with fixed prices and one point of contact. You always know where the project stands.' },
+}[lang];
+---
+
+<section class="container-x py-24 sm:py-32">
+  <SectionHeader eyebrow={copy.eyebrow} title={copy.title} intro={copy.intro} />
+  <ol class="mt-16 grid gap-px overflow-hidden rounded-3xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+    {
+      process[lang].map((step, idx) => (
+        <li class="reveal group relative flex min-h-72 flex-col bg-bg p-7 transition-colors duration-500 hover:bg-surface sm:p-8">
+          <span class="font-display text-7xl font-semibold leading-none tracking-tighter text-transparent transition-colors duration-500 [-webkit-text-stroke:1px_var(--muted)] group-hover:text-accent group-hover:[-webkit-text-stroke:1px_var(--fg)]">
+            0{idx + 1}
+          </span>
+          <h3 class="mt-auto pt-10 font-display text-2xl font-semibold">{step.title}</h3>
+          <p class="mt-3 leading-relaxed text-muted">{step.body}</p>
+        </li>
+      ))
+    }
+  </ol>
+</section>

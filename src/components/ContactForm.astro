@@ -1,0 +1,111 @@
+---
+import { services } from '@/data/services';
+import { routes, type Lang } from '@/i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const copy = {
+  sv: {
+    name: 'Namn',
+    email: 'E-post',
+    type: 'Vad gäller det?',
+    typePlaceholder: 'Välj projekttyp',
+    other: 'Något annat',
+    message: 'Berätta om ditt projekt',
+    messagePlaceholder: 'Vad vill du uppnå? Har du en befintlig sajt, deadline eller budget i åtanke?',
+    submit: 'Skicka förfrågan',
+    sending: 'Skickar…',
+    privacy: 'Vi använder dina uppgifter enbart för att besvara din förfrågan. Inget nyhetsbrev, ingen spam.',
+    error: 'Något gick fel och meddelandet skickades inte. Försök igen eller mejla oss direkt.',
+  },
+  en: {
+    name: 'Name',
+    email: 'Email',
+    type: 'What is it about?',
+    typePlaceholder: 'Choose project type',
+    other: 'Something else',
+    message: 'Tell us about your project',
+    messagePlaceholder: 'What do you want to achieve? Do you have an existing site, a deadline or a budget in mind?',
+    submit: 'Send enquiry',
+    sending: 'Sending…',
+    privacy: 'We only use your details to reply to your enquiry. No newsletter, no spam.',
+    error: 'Something went wrong and the message was not sent. Please try again or email us directly.',
+  },
+}[lang];
+const field =
+  'peer w-full rounded-2xl border border-line bg-bg px-4 pb-3 pt-7 text-base outline-none transition-colors placeholder:text-transparent focus:border-fg';
+const label =
+  'pointer-events-none absolute left-4 top-2.5 font-mono text-[0.7rem] uppercase tracking-wider text-muted';
+---
+
+<form
+  id="form"
+  action="/contact.php"
+  method="post"
+  class="contact-form relative scroll-mt-28 rounded-[2rem] border border-line bg-surface p-5 sm:p-8"
+  data-sending={copy.sending}
+>
+  <div data-error hidden role="alert" class="mb-5 rounded-2xl border border-red-500/40 bg-red-500/10 p-4 text-sm">
+    {copy.error}
+  </div>
+
+  <input type="hidden" name="lang" value={lang} />
+  <input type="hidden" name="redirect" value={routes.thanks[lang]} />
+  <input type="hidden" name="back" value={routes.contact[lang]} />
+  <input type="hidden" name="ts" value="" data-ts />
+  <div class="absolute -left-[9999px]" aria-hidden="true">
+    <label>Website <input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+  </div>
+
+  <div class="grid gap-4 sm:grid-cols-2">
+    <div class="relative">
+      <input id="f-name" name="name" type="text" required autocomplete="name" maxlength="120" placeholder={copy.name} class={field} />
+      <label for="f-name" class={label}>{copy.name} *</label>
+    </div>
+    <div class="relative">
+      <input id="f-email" name="email" type="email" required autocomplete="email" maxlength="200" placeholder={copy.email} class={field} />
+      <label for="f-email" class={label}>{copy.email} *</label>
+    </div>
+    <div class="relative sm:col-span-2">
+      <select id="f-type" name="type" required class:list={[field, 'appearance-none pr-12']}>
+        <option value="" disabled selected>{copy.typePlaceholder}</option>
+        {services.map((s) => <option value={s.id}>{s[lang].name}</option>)}
+        <option value="other">{copy.other}</option>
+      </select>
+      <label for="f-type" class={label}>{copy.type} *</label>
+      <span class="pointer-events-none absolute right-5 top-1/2 -translate-y-1/2 text-muted" aria-hidden="true">↓</span>
+    </div>
+    <div class="relative sm:col-span-2">
+      <textarea id="f-message" name="message" required rows="6" maxlength="5000" placeholder={copy.messagePlaceholder} class:list={[field, 'resize-y placeholder:text-muted/70 focus:placeholder:text-muted']}></textarea>
+      <label for="f-message" class={label}>{copy.message} *</label>
+    </div>
+  </div>
+
+  <div class="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <p class="max-w-xs text-xs leading-relaxed text-muted">{copy.privacy}</p>
+    <button type="submit" class="btn btn-primary !min-h-14 !px-8 text-base">
+      <span data-label>{copy.submit}</span>
+      <span class="arrow" aria-hidden="true">→</span>
+    </button>
+  </div>
+</form>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('.contact-form');
+  if (form) {
+    const params = new URLSearchParams(location.search);
+    const type = params.get('typ');
+    const select = form.querySelector<HTMLSelectElement>('select[name="type"]');
+    if (type && select?.querySelector(`option[value="${CSS.escape(type)}"]`)) select.value = type;
+    if (params.get('status') === 'error') form.querySelector<HTMLElement>('[data-error]')!.hidden = false;
+
+    form.querySelector<HTMLInputElement>('[data-ts]')!.value = String(Date.now());
+    form.addEventListener('submit', () => {
+      const label = form.querySelector<HTMLElement>('[data-label]');
+      if (label) label.textContent = form.dataset.sending ?? '';
+      form.querySelector<HTMLButtonElement>('button[type="submit"]')!.disabled = true;
+    });
+  }
+</script>

@@ -1,0 +1,72 @@
+---
+import Base from '@/layouts/Base.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import ServiceList from '@/components/ServiceList.astro';
+import ProcessSection from '@/components/ProcessSection.astro';
+import FaqSection from '@/components/FaqSection.astro';
+import CtaBlock from '@/components/CtaBlock.astro';
+import { homeFaq } from '@/data/content';
+import { contactHref, routes, t, type Lang } from '@/i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const i = t(lang);
+const copy = {
+  sv: {
+    title: 'Tjänster – webbutveckling, e-handel, WordPress, Shopify & SEO i Halmstad | Weik',
+    description:
+      'Webbutveckling, e-handel, WordPress, Shopify, SEO och support från Weik i Halmstad. En partner för hela din digitala närvaro. Boka ett gratis samtal.',
+    eyebrow: 'Tjänster',
+    h1: 'Allt för att din verksamhet ska synas, sälja och växa online.',
+    lead: 'Vi kombinerar design, utveckling och SEO under ett och samma tak. Det betyder färre överlämningar, snabbare leverans och en sajt där allt är byggt mot samma mål: fler kunder.',
+    unsureTitle: 'Osäker på vad du behöver?',
+    unsureBody: 'Berätta om ditt mål så rekommenderar vi rätt lösning. Det första samtalet är alltid gratis.',
+    faqTitle: 'Vanliga frågor om våra tjänster',
+  },
+  en: {
+    title: 'Services – web development, e-commerce, WordPress, Shopify & SEO | Weik',
+    description:
+      'Web development, e-commerce, WordPress, Shopify, SEO and support from Weik in Halmstad, Sweden. One partner for your entire digital presence. Book a free call.',
+    eyebrow: 'Services',
+    h1: 'Everything your business needs to get found, sell and grow online.',
+    lead: 'We combine design, development and SEO under one roof. That means fewer hand-offs, faster delivery and a site where everything is built towards one goal: more customers.',
+    unsureTitle: 'Not sure what you need?',
+    unsureBody: 'Tell us your goal and we will recommend the right solution. The first call is always free.',
+    faqTitle: 'Common questions about our services',
+  },
+}[lang];
+const crumbs = [
+  { name: i.breadcrumbHome, href: routes.home[lang] },
+  { name: i.nav.services, href: routes.services[lang] },
+];
+---
+
+<Base lang={lang} title={copy.title} description={copy.description} alternates={routes.services}>
+  <section class="container-x pb-16 pt-36 sm:pt-44">
+    <Breadcrumbs items={crumbs} />
+    <div class="hero-enter mt-10 grid gap-8 lg:grid-cols-12 lg:items-end">
+      <h1 class="h-section !text-[clamp(2.75rem,7vw,6.5rem)] lg:col-span-9">{copy.h1}</h1>
+      <p class="text-lg leading-relaxed text-muted lg:col-span-3">{copy.lead}</p>
+    </div>
+  </section>
+
+  <section class="container-x pb-24">
+    <ServiceList lang={lang} />
+    <div class="reveal mt-12 flex flex-col gap-6 rounded-3xl bg-surface p-7 sm:flex-row sm:items-center sm:justify-between sm:p-10">
+      <div>
+        <h2 class="font-display text-3xl font-semibold">{copy.unsureTitle}</h2>
+        <p class="mt-2 max-w-xl text-muted">{copy.unsureBody}</p>
+      </div>
+      <a href={contactHref(lang)} class="btn btn-primary shrink-0">
+        {i.ctaPrimary}
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </section>
+
+  <ProcessSection lang={lang} />
+  <FaqSection faq={homeFaq[lang]} title={copy.faqTitle} />
+  <CtaBlock lang={lang} />
+</Base>
