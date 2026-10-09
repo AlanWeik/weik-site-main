@@ -3,7 +3,7 @@ name: Publicera till Inleed
 on:
   push:
     branches:
-      - main # Ändra till 'master' om din huvudbranch heter det
+      - main
 
 jobs:
   deploy:
@@ -19,11 +19,11 @@ jobs:
 
       - name: Installera och bygg
         run: |
-          npm install
+          npm install --legacy-peer-deps
           npm run build
 
       - name: Skicka filer via FTP
-        uses: SamKirsch/ftp-deploy-action@v4.3.5
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
