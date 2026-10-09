@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 const TO_EMAIL = 'alanweik@me.com';
-const FROM_EMAIL = 'no-reply@weik.se';
+const FROM_EMAIL = 'hej@weik.se';
 const MIN_SECONDS = 3;
 
 $types = [
